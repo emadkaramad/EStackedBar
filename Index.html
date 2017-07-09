@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+    <title>EStackedBar Demo</title>
+    <script src="Scripts/jquery-3.2.1.min.js"></script>
+    <script src="Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="Scripts/estackedbar.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/estackedbar.css">
+    <link rel="stylesheet" type="text/css" href="Styles/main.css">
+</head>
+
+<body>
+    <script>
+        var dataSource = {
+            columns: [
+                {
+                    id: "A",
+                    class: "col col-a",
+                    header: "Monday",
+                    sections: [
+                        {
+                            id: "A0",
+                            header: "Morning 3.5 hrs",
+                            capacity: 3.5,
+                            grids: 7,
+                            grid_lines: 7,
+                            overflow: false,
+                            droppable: true,
+                        },
+                        {
+                            id: "AI0",
+                            header: "Lunch time 1 hr",
+                            class: "section-inactive",
+                            capacity: 1,
+                            overflow: false,
+                            droppable: false,
+                        },
+                        {
+                            id: "A1",
+                            header: "Evening 4.5 hrs",
+                            date_from: "2017-01-01T00:00:00",
+                            date_to: "2017-01-01T23:59:59",
+                            capacity: 4.5,
+                            grids: 9,
+                            grid_lines: 9,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ]
+                },
+                {
+                    id: "B",
+                    class: "col col-b",
+                    header: "Tuesday",
+                    sections: [
+                        {
+                            id: "B0",
+                            header: "Morning 3.5 hrs",
+                            capacity: 3.5,
+                            grids: 7,
+                            grid_lines: 7,
+                            overflow: false,
+                            droppable: true,
+                        },
+                        {
+                            id: "BI0",
+                            header: "Lunch time 1 hr",
+                            class: "section-inactive",
+                            capacity: 1,
+                            overflow: false,
+                            droppable: false,
+                        },
+                        {
+                            id: "B1",
+                            header: "Evening 4.5 hrs",
+                            date_from: "2017-01-01T00:00:00",
+                            date_to: "2017-01-01T23:59:59",
+                            capacity: 4.5,
+                            grids: 9,
+                            grid_lines: 9,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ]
+                },
+                {
+                    id: "C",
+                    class: "col col-c",
+                    header: "Wednesday",
+                    sections: [
+                        {
+                            id: "C0",
+                            header: "Morning 3.5 hrs",
+                            capacity: 3.5,
+                            grids: 7,
+                            grid_lines: 7,
+                            overflow: false,
+                            droppable: true,
+                        },
+                        {
+                            id: "CI0",
+                            header: "Lunch time 1 hr",
+                            class: "section-inactive",
+                            capacity: 1,
+                            overflow: false,
+                            droppable: false,
+                        },
+                        {
+                            id: "C1",
+                            header: "Evening 4.5 hrs",
+                            date_from: "2017-01-01T00:00:00",
+                            date_to: "2017-01-01T23:59:59",
+                            capacity: 4.5,
+                            grids: 9,
+                            grid_lines: 9,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ]
+                },
+                {
+                    id: "D",
+                    class: "col col-d",
+                    header: "Thursday",
+                    sections: [
+                        {
+                            id: "D0",
+                            header: "Morning 3.5 hrs",
+                            capacity: 3.5,
+                            grids: 7,
+                            grid_lines: 7,
+                            overflow: false,
+                            droppable: true,
+                        },
+                        {
+                            id: "DI0",
+                            header: "Lunch time 1 hr",
+                            class: "section-inactive",
+                            capacity: 1,
+                            overflow: false,
+                            droppable: false,
+                        },
+                        {
+                            id: "D1",
+                            header: "Evening 4.5 hrs",
+                            date_from: "2017-01-02T00:00:00",
+                            date_to: "2017-01-02T23:59:59",
+                            capacity: 4.5,
+                            grids: 9,
+                            grid_lines: 9,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ]
+                },
+                {
+                    id: "E",
+                    class: "col col-e",
+                    header: "Friday",
+                    sections: [
+                        {
+                            id: "E0",
+                            header: "Morning 3.5 hrs",
+                            capacity: 3.5,
+                            grids: 7,
+                            grid_lines: 7,
+                            overflow: false,
+                            droppable: true,
+                        },
+                        {
+                            id: "EI0",
+                            header: "Lunch time 1 hr",
+                            class: "section-inactive",
+                            capacity: 1,
+                            overflow: false,
+                            droppable: false,
+                        },
+                        {
+                            id: "E1",
+                            header: "Evening 4.5 hrs",
+                            date_from: "2017-01-03T00:00:00",
+                            date_to: "2017-01-03T23:59:59",
+                            capacity: 4.5,
+                            grids: 9,
+                            grid_lines: 9,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ],
+                },
+                {
+                    id: "F",
+                    class: "col col-f",
+                    header: "Saturday",
+                    sections: [
+                        {
+                            id: "F0",
+                            header: "Up to 8 hrs",
+                            capacity: 9,
+                            grids: 18,
+                            grid_lines: 18,
+                            overflow: false,
+                            droppable: true,
+                        },
+                    ]
+                },
+                {
+                    id: "G",
+                    class: "col col-g",
+                    header: "Sunday",
+                    sections: [
+                        {
+                            id: "G0",
+                            header: "Off",
+                            class: "section-inactive",
+                            capacity: 0,
+                            grids: 0,
+                            grid_lines: 0,
+                            overflow: false,
+                            droppable: false,
+                        },
+                    ]
+                },
+            ],
+            items: [
+                {
+                    id: "P1",
+                    class: "item-p1",
+                    content: "Client meeting",
+                    value: 2,
+                    date: "2017-01-01T00:00:00",
+                    section: "B1",
+                    resizable: true,
+                    draggable: true,
+                },
+                {
+                    id: "P2",
+                    section: "B1",
+                    class: "item-p2",
+                    content: "Training",
+                    value: 3,
+                    date: "2017-01-01T00:00:00",
+                    section: "A0",
+                    resizable: true,
+                    draggable: true,
+                },
+                {
+                    id: "P3",
+                    class: "item-p3",
+                    content: "Workshop",
+                    value: 3,
+                    date: "2017-01-01T00:00:00",
+                    section: "C0",
+                    resizable: true,
+                    draggable: true,
+                },
+                {
+                    id: "P4",
+                    class: "item-p4",
+                    content: "Company's website development",
+                    value: 6,
+                    date: "2017-01-01T00:00:00",
+                    section: "F0",
+                    resizable: true,
+                    draggable: true,
+                }
+            ],
+        };
+        $(document).ready(function () {
+            var options = {
+                dataSource: dataSource,
+            }
+            var estackedbar = new EStackedBar($("#estackbar"), options);
+        });
+    </script>
+    <div id="estackbar"></div>
+</body>
+
+</html>

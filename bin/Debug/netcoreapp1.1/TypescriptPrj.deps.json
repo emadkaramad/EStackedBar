@@ -1,0 +1,32 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v1.1",
+    "signature": "548754bbb6fb9409cd87339c725b081644f22a17"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v1.1": {
+      "TypescriptPrj/1.0.0": {
+        "dependencies": {
+          "jQuery": "3.1.1"
+        },
+        "runtime": {
+          "TypescriptPrj.dll": {}
+        }
+      },
+      "jQuery/3.1.1": {}
+    }
+  },
+  "libraries": {
+    "TypescriptPrj/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "jQuery/3.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XGsgwse025NxNPHjY7GE8HMFNzjqsa7a/PmNS1S5bVU++pNpZmiTnzUBK6OmECnqG/fIMVaAYHTnfoYd/Wz28g=="
+    }
+  }
+}

@@ -1,0 +1,54 @@
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  padding: 10px;
+  font-family: "Calibri";
+}
+body h1 {
+  font-size: .8em;
+}
+.estackedbar {
+  width: 100%;
+  height: 80%;
+}
+.estackedbar .esb-main-frame .esb-column {
+  border: 1px solid #eee;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper > .esb-column-header > .esb-column-header-content {
+  background-color: #555;
+  color: #fff;
+  padding: 3px;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section.section-inactive .esb-section-content {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQYV2NkQAX/GZH4/xkYGBhhAmAOSBJEwDkgAQCCrgQEjpMcPgAAAABJRU5ErkJggg==);
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-header {
+  background-color: #ddd;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-header > .esb-section-header-content {
+  padding: 3px;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item {
+  border-radius: 3px;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item.esb-item-dragging-shadow {
+  opacity: .5;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item.item-p1 {
+  background-color: #deaade;
+  border: 1px solid #cd99cd;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item.item-p2 {
+  background-color: #aadede;
+  border: 1px solid #99cdcd;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item.item-p3 {
+  background-color: #dedeaa;
+  border: 1px solid #cdcd99;
+}
+.estackedbar .esb-main-frame .esb-column > .esb-column-wrapper .esb-section .esb-section-content-wrapper .esb-section-content .esb-item.item-p4 {
+  background-color: #aadeaa;
+  border: 1px solid #99cd99;
+}

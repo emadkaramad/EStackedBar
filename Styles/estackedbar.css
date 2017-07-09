@@ -1,0 +1,102 @@
+.estackedbar {
+  box-sizing: border-box;
+  display: table;
+  position: relative;
+}
+.estackedbar div {
+  box-sizing: border-box;
+}
+.estackedbar > .esb-main-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: table-row;
+  table-layout: fixed;
+}
+.estackedbar > .esb-main-frame > .esb-column {
+  display: table-cell;
+  position: relative;
+  width: 2%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper {
+  display: table;
+  table-layout: fixed;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-header {
+  display: table-row;
+  width: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-header > .esb-column-header-content {
+  display: table-cell;
+  width: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container {
+  display: table-row;
+  width: 100%;
+  height: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section {
+  display: table;
+  position: relative;
+  width: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-header {
+  width: 100%;
+  height: 1em;
+  display: table-row;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-header > .esb-section-header-content {
+  display: table-cell;
+  width: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper {
+  width: 100%;
+  display: table-row;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-item-gap {
+  flex: 1;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-section-grid-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-section-grid-lines > pattern > line {
+  stroke: #eaeaea;
+  stroke-width: 1;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-item {
+  position: relative;
+  overflow: hidden;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-item.ui-draggable-dragging {
+  z-index: 600;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-item > .ui-resizable-handle.ui-resizable-n {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 10px;
+  width: 100%;
+  cursor: ns-resize;
+}
+.estackedbar > .esb-main-frame > .esb-column > .esb-column-wrapper > .esb-column-container > .esb-section > .esb-section-content-wrapper > .esb-section-content > .esb-item > .ui-resizable-handle.ui-resizable-s {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 10px;
+  width: 100%;
+  cursor: ns-resize;
+}

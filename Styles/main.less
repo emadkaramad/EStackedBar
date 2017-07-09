@@ -1,0 +1,71 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    padding: 10px;
+    font-family: "Calibri";
+    h1 {
+        font-size: .8em;
+    }
+}
+
+.estackedbar {
+    width: 100%;
+    height: 80%;
+    .esb-main-frame {
+        .esb-column {
+            border: 1px solid #eee;
+            > .esb-column-wrapper {
+                > .esb-column-header {
+                    > .esb-column-header-content {
+                        background-color: #555;
+                        color: #fff;
+                        padding: 3px;
+                    }
+                }
+                .esb-section {
+                    &.section-inactive {
+                        .esb-section-content {
+                            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQYV2NkQAX/GZH4/xkYGBhhAmAOSBJEwDkgAQCCrgQEjpMcPgAAAABJRU5ErkJggg==);
+                        }
+                    }
+                    .esb-section-header {
+                        background-color: #ddd;
+                        > .esb-section-header-content {
+                            padding: 3px;
+                        }
+                    }
+                    .esb-section-content-wrapper {
+                        .esb-section-content {
+                            .esb-item {
+                                border-radius: 3px;
+                                &.esb-item-dragging-shadow {
+                                    opacity: .5;
+                                }
+                                .esb-item-content {}
+                                &.item-p1 {
+                                    background-color: #deaade;
+                                    border: 1px solid #cd99cd;
+                                }
+                                &.item-p2 {
+                                    background-color: #aadede;
+                                    border: 1px solid #99cdcd;
+                                }
+                                &.item-p3 {
+                                    background-color: #dedeaa;
+                                    border: 1px solid #cdcd99;
+                                }
+                                &.item-p4 {
+                                    background-color: #aadeaa;
+                                    border: 1px solid #99cd99;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
