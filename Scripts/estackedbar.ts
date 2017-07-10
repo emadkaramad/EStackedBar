@@ -1,13 +1,14 @@
 /// <reference path="import/jquery.d.ts"/>
 /// <reference path="import/jqueryui.d.ts"/>
+/// <reference path="EStackedBar.d.ts"/>
 
 namespace EControls {
     export namespace EStackedBarControl {
-        class DataManager {
-            items: any;
-            columns: any;
+        class DataManager implements IEsbDataManager {
+            items: IEsbItem[];
+            columns: IEsbColumn[];
 
-            constructor(items: any, columns: any) {
+            constructor(items: IEsbItem[], columns: IEsbColumn[]) {
                 this.items = items;
                 this.columns = columns;
             }
@@ -19,8 +20,8 @@ namespace EControls {
             getItemsByDate = (dateFrom: Date, dateTo: Date) => {
                 var result = [];
                 this.items.forEach(item => {
-                    if (item.hasOwnProperty("date")) {
-                        let date = this.convertToDate(item["date"]);
+                    if (item.date) {
+                        let date = this.convertToDate(item.date);
                         if (date >= dateFrom && date <= dateTo)
                             result.push(item);
                     }
@@ -32,7 +33,7 @@ namespace EControls {
             getItemsBySectionId = (sectionId: string) => {
                 var result = [];
                 this.items.forEach(item => {
-                    if (item.hasOwnProperty("section") && item["section"] == sectionId) {
+                    if (item.section && item.section == sectionId) {
                         result.push(item);
                     }
                 });
@@ -43,12 +44,12 @@ namespace EControls {
             getItemsBySectionIdAndDate = (sectionId: string, dateFrom: Date, dateTo: Date) => {
                 var result = [];
                 this.items.forEach(item => {
-                    if (item.hasOwnProperty("section") && item["section"] == sectionId) {
+                    if (item.section && item.section == sectionId) {
                         result.push(item);
                         return;
                     }
-                    if (item.hasOwnProperty("date")) {
-                        let date = this.convertToDate(item["date"]);
+                    if (item.date) {
+                        let date = this.convertToDate(item.date);
                         if (date >= dateFrom && date <= dateTo)
                             result.push(item);
                     }
@@ -60,7 +61,7 @@ namespace EControls {
             getItemById = (id: string) => {
                 for (var i = 0; i < this.items.length; i++) {
                     let item = this.items[i];
-                    if (item["id"] == id)
+                    if (item.id == id)
                         return item;
                 }
                 return null;
@@ -69,7 +70,7 @@ namespace EControls {
             getColumnById = (id: string) => {
                 for (var i = 0; i < this.columns.length; i++) {
                     let column = this.columns[i];
-                    if (column["id"] == id)
+                    if (column.id == id)
                         return column;
                 }
                 return null;
@@ -79,7 +80,7 @@ namespace EControls {
                 for (var i = 0; i < this.columns.length; i++) {
                     for (var j = 0; j < this.columns[i].sections.length; j++) {
                         let section = this.columns[i].sections[j];
-                        if (section["id"] == id)
+                        if (section.id == id)
                             return section;
                     }
                 }
@@ -105,7 +106,7 @@ namespace EControls {
             getTotalItemsValue = (sectionId: string) => {
                 var result = 0;
                 this.getItemsBySectionId(sectionId).forEach(item => {
-                    result += item["value"];
+                    result += item.value;
                 });
                 return result;
             }
@@ -113,14 +114,14 @@ namespace EControls {
             getTotalColumnCapacity = (columnId) => {
                 var result = 0;
                 this.getColumnById(columnId).sections.forEach(section => {
-                    result += section["capacity"];
+                    result += section.capacity;
                 });
                 return result;
             }
 
             updateItem = (item: any) => {
                 for (var i = 0; i < this.items.length; i++) {
-                    if (this.items[i]["id"] == item["id"]) {
+                    if (this.items[i].id == item.id) {
                         this.items[i] = item;
                         return;
                     }
@@ -129,27 +130,79 @@ namespace EControls {
             }
         }
 
-        export class EStackedBarCore {
+        export class EStackedBarCore implements IEsbStackedBarCore {
             baseElement: JQuery;
-            dataManager: DataManager;
+            dataManager: IEsbDataManager;
             private sectionHeight: number = 0;
             private availableSectionHeight: number = 0;
+            onItemMoved: (data: IEsbItemMovedEventData, ui: IEsbItemMovedEventUI) => boolean;
+            onItemResizing: (data: IEsbItemResizingEventData, ui: IEsbItemResizingEventUI) => boolean;
+            onItemResized: (data: IEsbItemResizingEventData, ui: IEsbItemResizedEventUI) => boolean;
+            onOverflow: (data: IEsbOverflowEventData, ui: IEsbOverflowEventUI) => boolean;
 
             constructor(baseElement: JQuery, options: any) {
+                this.initialiseBaseElement(baseElement);
+                this.mapOptions(options);
+                this.render();
+            }
+
+            initialiseBaseElement(baseElement: JQuery) {
                 this.baseElement = baseElement;
+                this.baseElement[0]["EStackedBar"] = this;
+                this.baseElement.addClass("estackedbar");
+            }
+
+            private mapOptions(options: any) {
                 if (options.hasOwnProperty("dataSource") != null)
                     this.setDataSource(options.dataSource);
+                if (options.hasOwnProperty("onItemMoved") != null)
+                    this.onItemMoved = options.onItemMoved;
+                if (options.hasOwnProperty("onItemResizing") != null)
+                    this.onItemResizing = options.onItemResizing;
+                if (options.hasOwnProperty("onItemResized") != null)
+                    this.onItemResized = options.onItemResized;
+                if (options.hasOwnProperty("onOverflow") != null)
+                    this.onOverflow = options.onOverflow;
+            }
 
-                this.baseElement.addClass("estackedbar");
-                this.render();
+            private triggerItemMoved() {
+                if (this.onItemMoved)
+                    return this.onItemMoved(
+                        { dataManager: this.dataManager }
+                        , { baseElement: this.baseElement });
+                return null;
+            }
+
+            private triggerItemResizing() {
+                if (this.onItemResizing)
+                    return this.onItemResizing(
+                        { dataManager: this.dataManager }
+                        , { baseElement: this.baseElement });
+                return null;
+            }
+
+            private triggerItemResized() {
+                if (this.onItemResized)
+                    return this.onItemResized(
+                        { dataManager: this.dataManager }
+                        , { baseElement: this.baseElement });
+                return null;
+            }
+
+            private triggerOverflow() {
+                if (this.onOverflow)
+                    return this.onOverflow(
+                        { dataManager: this.dataManager }
+                        , { baseElement: this.baseElement });
+                return null;
             }
 
             private getMainFrame = () => {
                 return $(".esb-main-frame", this.baseElement);
             }
 
-            private setDataSource = (dataSource: any) => {
-                this.dataManager = new DataManager(dataSource["items"], dataSource["columns"]);
+            private setDataSource = (dataSource: { items: IEsbItem[], columns: IEsbColumn[] }) => {
+                this.dataManager = new DataManager(dataSource.items, dataSource.columns);
             }
 
             private findColumnElementByItemElement = (itemElement: JQuery) => {
@@ -196,28 +249,28 @@ namespace EControls {
 
                         // Items
                         let items;
-                        if (section.hasOwnProperty("date_from") && section.hasOwnProperty("date_to"))
-                            items = this.dataManager.getItemsBySectionIdAndDate(section["id"], section["date_from"], section["date_to"]);
+                        if (section.dateFrom && section.dateTo)
+                            items = this.dataManager.getItemsBySectionIdAndDate(section.id, new Date(section.dateFrom), new Date(section.dateTo));
                         else
-                            items = this.dataManager.getItemsBySectionId(section["id"]);
+                            items = this.dataManager.getItemsBySectionId(section.id);
                         for (var k = 0; k < items.length; k++) {
                             this.addItemToSection(section, items[k]);
                         }
                     }
 
-                    this.recalculateSectionHeights(column["id"]);
+                    this.recalculateSectionHeights(column.id);
                 }
 
                 this.baseElement.append(mainFrame);
             }
 
-            addColumn = (column: JSON) => {
-                let columnElement = $("<div>").attr("data-id", column["id"]).addClass("esb-column");
+            addColumn = (column: IEsbColumn) => {
+                let columnElement = $("<div>").attr("data-id", column.id).addClass("esb-column");
                 let columnWrapperElement = $("<div>").addClass("esb-column-wrapper");
-                if (column.hasOwnProperty("header")) {
+                if (column.header) {
                     let headerElement = $("<div>").addClass("esb-column-header");
                     let headerCellElement = $("<div>").addClass("esb-column-header-content");
-                    headerCellElement.html(column["header"]);
+                    headerCellElement.html(column.header);
                     headerElement.append(headerCellElement);
                     columnWrapperElement.append(headerElement);
                 }
@@ -227,24 +280,24 @@ namespace EControls {
                 this.getMainFrame().append(columnElement);
             }
 
-            addSectionToColumn = (column: JSON, section: JSON) => {
-                let columnContainerElement = $(".esb-column-container", this.findColumnElementById(column["id"]));
-                let columnCapacity = this.dataManager.getTotalColumnCapacity(column["id"]);
-                let sectionHeight = section["capacity"] / columnCapacity * 100;
-                if (section["capacity"] == columnCapacity && columnCapacity == 0)
+            addSectionToColumn = (column: IEsbColumn, section: IEsbSection) => {
+                let columnContainerElement = $(".esb-column-container", this.findColumnElementById(column.id));
+                let columnCapacity = this.dataManager.getTotalColumnCapacity(column.id);
+                let sectionHeight = section.capacity / columnCapacity * 100;
+                if (section.capacity == columnCapacity && columnCapacity == 0)
                     sectionHeight = 100;
 
-                let sectionElement = $("<div>").attr("data-id", section["id"]).addClass("esb-section")
+                let sectionElement = $("<div>").attr("data-id", section.id).addClass("esb-section")
                     .css("height", sectionHeight + "%");
-                if (section.hasOwnProperty("class"))
-                    sectionElement.addClass(section["class"]);
+                if (section.class)
+                    sectionElement.addClass(section.class);
                 let contentWrapperElement = $("<div>").addClass("esb-section-content-wrapper");
                 let contentElement = $("<div>").addClass("esb-section-content");
 
                 // Grids
-                if (section.hasOwnProperty("grid_lines") && section["grid_lines"] > 0) {
-                    let gridLineSize = 100 / section["grid_lines"];
-                    contentElement[0].appendChild(this.generateGrids(gridLineSize, section["id"]))
+                if (section.grid_lines && section.grid_lines > 0) {
+                    let gridLineSize = 100 / section.grid_lines;
+                    contentElement[0].appendChild(this.generateGrids(gridLineSize, section.id))
                 }
 
                 // Gap
@@ -252,17 +305,17 @@ namespace EControls {
                 contentElement.append(itemGapElement);
 
                 contentWrapperElement.append(contentElement);
-                if (section.hasOwnProperty("header")) {
+                if (section.header) {
                     let headerElement = $("<div>").addClass("esb-section-header");
                     let headerCellElement = $("<div>").addClass("esb-section-header-content");
-                    headerCellElement.html(section["header"]);
+                    headerCellElement.html(section.header);
                     headerElement.append(headerCellElement);
                     sectionElement.append(headerElement);
                 }
                 sectionElement.append(contentWrapperElement);
                 columnContainerElement.append(sectionElement);
 
-                if (section.hasOwnProperty("droppable") && section["droppable"] == true) {
+                if (section.droppable && section.droppable == true) {
                     contentElement.addClass("esb-content-droppable");
                     contentElement.droppable({
                         tolerance: "intersect",
@@ -275,36 +328,36 @@ namespace EControls {
 
             recalculateSectionHeights = (columnId: string) => {
                 var column = this.dataManager.getColumnById(columnId);
-                let columnCapacity = this.dataManager.getTotalColumnCapacity(column["id"]);
+                let columnCapacity = this.dataManager.getTotalColumnCapacity(column.id);
                 var totalHeight = 0;
                 for (var i = 0; i < column.sections.length; i++) {
                     let section = column.sections[i];
-                    let sectionElement = this.findSectionElementById(section["id"]);
+                    let sectionElement = this.findSectionElementById(section.id);
                     let sectionHeight = 0;
                     if (i == column.sections.length - 1) {
                         sectionHeight = 100 - totalHeight;
                     }
                     else
-                        sectionHeight = Math.ceil(section["capacity"] / columnCapacity * 100);
+                        sectionHeight = Math.ceil(section.capacity / columnCapacity * 100);
                     sectionElement.css("height", sectionHeight + "%");
                     totalHeight += sectionHeight;
                 }
             }
 
-            addItemToSection = (section: JSON, item: JSON) => {
-                let sectionElement = this.findSectionElementById(section["id"]);
+            addItemToSection = (section: IEsbSection, item: IEsbItem) => {
+                let sectionElement = this.findSectionElementById(section.id);
                 let contentElement = $(".esb-section-content", sectionElement);
 
-                let sectionCapacity = section["capacity"];
-                let itemHeight = item["value"] / sectionCapacity * 100;
-                let itemWrapperElement = $("<div>").attr("data-id", item["id"]).addClass("esb-item").addClass(item["class"])
+                let sectionCapacity = section.capacity;
+                let itemHeight = item.value / sectionCapacity * 100;
+                let itemWrapperElement = $("<div>").attr("data-id", item.id).addClass("esb-item").addClass(item.class)
                     .css("height", itemHeight + "%");
-                let itemContentElement = $("<div>").addClass("esb-item-content").html(item["content"]);
+                let itemContentElement = $("<div>").addClass("esb-item-content").html(item.content);
 
                 itemWrapperElement.append(itemContentElement);
                 contentElement.append(itemWrapperElement);
 
-                if (item.hasOwnProperty("draggable") && item["draggable"] == true) {
+                if (item.draggable && item.draggable == true) {
                     itemWrapperElement.addClass("esb-item-draggable");
                     $(itemWrapperElement).draggable({
                         // containment: ".esb-main-frame",
@@ -315,7 +368,7 @@ namespace EControls {
                     });
                 }
 
-                if (item.hasOwnProperty("resizable") && item["resizable"] == true) {
+                if (item.resizable && item.resizable == true) {
                     itemWrapperElement.addClass("esb-item-resizable");
                     $(itemWrapperElement).resizable({
                         handles: "n",
@@ -375,17 +428,17 @@ namespace EControls {
                 let item = this.dataManager.getItemById(itemId);
 
                 // Check overflow
-                let isOverflowAllowed = section.hasOwnProperty("overflow") && section["overflow"] == true;
+                let isOverflowAllowed = section.overflow && section.overflow == true;
                 let totalItemValues = this.dataManager.getTotalItemsValue(sectionId);
-                if (!isOverflowAllowed && totalItemValues + item["value"] > section["capacity"])
+                if (!isOverflowAllowed && totalItemValues + item.value > section.capacity)
                     return false;
 
                 // Update data source
-                item["section"] = sectionId;
+                item.section = sectionId;
                 this.dataManager.updateItem(item);
 
                 // Update ui
-                let itemHeight = item["value"] / section["capacity"] * 100;
+                let itemHeight = item.value / section.capacity * 100;
                 itemElement.css("height", itemHeight + "%");
                 $(".esb-item-gap", event.target).after(itemElement);
             }
@@ -409,9 +462,9 @@ namespace EControls {
                 itemElement.css("top", "");
                 let sectionElement = this.findSectionElementByItemElement(itemElement);
                 let section = this.dataManager.getSectionById(sectionElement.attr("data-id"));
-                let itemValue = itemElement.height() / this.sectionHeight * section["capacity"];
+                let itemValue = itemElement.height() / this.sectionHeight * section.capacity;
                 // Snap to grid
-                let gridSize = section["capacity"] / section["grids"];
+                let gridSize = section.capacity / section.grids;
                 itemValue = Math.floor(itemValue / gridSize) * gridSize;
 
                 let totalItemsValue = itemValue;
@@ -419,15 +472,15 @@ namespace EControls {
                     let siblingItemId = $(obj).attr("data-id");
                     if (itemElement.attr("data-id") != siblingItemId) {
                         let siblingItem = this.dataManager.getItemById(siblingItemId);
-                        totalItemsValue += siblingItem["value"];
+                        totalItemsValue += siblingItem.value;
                     }
                 });
 
-                if (totalItemsValue > section["capacity"] || itemElement.height() > this.availableSectionHeight) {
-                    itemValue = section["capacity"] - (totalItemsValue - itemValue);
+                if (totalItemsValue > section.capacity || itemElement.height() > this.availableSectionHeight) {
+                    itemValue = section.capacity - (totalItemsValue - itemValue);
                 }
 
-                let itemHeight = itemValue / section["capacity"] * 100;
+                let itemHeight = itemValue / section.capacity * 100;
                 itemElement.css("height", itemHeight + "%");
             }
 
@@ -437,7 +490,7 @@ namespace EControls {
                 let section = this.dataManager.getSectionById(sectionElement.attr("data-id"));
                 let itemId = itemElement.attr("data-id");
                 let item = this.dataManager.getItemById(itemId);
-                item["value"] = itemElement.height() / this.sectionHeight * section["capacity"];
+                item.value = itemElement.height() / this.sectionHeight * section.capacity;
                 this.dataManager.updateItem(item);
             }
         }
